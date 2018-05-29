@@ -415,7 +415,7 @@ boot.ci(b)
 ###############################################################
 
 # PUT DATA INTO LONG FORMAT
-participantsdata.wide <- read.csv("180501_Data_participants_IV.csv", header = TRUE) # load data
+participantsdata.wide <- read.csv("../data/180529_Data_participants_IV.csv", header = TRUE) # load data
 colnames(participantsdata.wide)[1] <- "participant" #rename participant variable
 
 install.packages("reshape2") # install reshape package to put datafile from wide into long format
@@ -427,12 +427,9 @@ is.factor(participant) # check whether Participant is factor (it should be a fac
 # reduce the dataframe: only keep participant, learningtype and test scores
 colnames(participantsdata.wide) #check column numbers
 participantsdata.wide <- participantsdata.wide[, -c(2, 4:36, 49:77)] #exclude columns I don't need
-participantsdata.wide <- participantsdata.wide[-c(49:59),] #exclude empty rows
 colnames(participantsdata.wide) #check
 
 # put into long format:
-install.packages("reshape2")
-library(reshape2) # load the necessary package for melt function
 participantsdata.long <- melt(participantsdata.wide, id.vars = c("participant", "learningtype"), variable.name = "variable", value.name = "score") # use melt function to put data into long format
 str(participantsdata.long) # tells about structure of the dataframe; check if there are number of pp x 12 observations
 
@@ -517,15 +514,3 @@ library(lattice)
 parallelplot(~participantsdata.wide[c(3, 7)] | participantsdata.wide$learningtype, data = participantsdata.wide)
 # here: crit_input_T1 vs. crit_input T2
 # works, but I don't know yet how to handle the different factors in an easier way
-
-
-
-
-
-
-
-
-
-
-
-
