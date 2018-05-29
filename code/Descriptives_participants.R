@@ -157,7 +157,6 @@ b=boot(pp.explicit$crit_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(pp.explicit$crit_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
 boot.ci(b) # Output: use BCA!
@@ -183,7 +182,6 @@ boot.ci(b)
 b=boot(pp.incidental$crit_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
-
 
 b=boot(pp.incidental$crit_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
@@ -211,7 +209,6 @@ b=boot(pp.unaware$crit_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(pp.unaware$crit_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
 boot.ci(b) # Output: use BCA!
@@ -238,7 +235,6 @@ b=boot(participantsdata$crit_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(participantsdata$crit_noinput_T1, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
@@ -264,7 +260,6 @@ boot.ci(b)
 b=boot(pp.explicit.incidental$crit_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
-
 
 b=boot(pp.explicit.incidental$crit_noinput_T1, samplemean, R=10000)
 plot(b) 
@@ -293,7 +288,6 @@ b=boot(pp.explicit$contr_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(pp.explicit$contr_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
 boot.ci(b) # Output: use BCA!
@@ -319,7 +313,6 @@ boot.ci(b)
 b=boot(pp.incidental$contr_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
-
 
 b=boot(pp.incidental$contr_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
@@ -347,7 +340,6 @@ b=boot(pp.unaware$contr_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(pp.unaware$contr_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
 boot.ci(b) # Output: use BCA!
@@ -374,7 +366,6 @@ b=boot(participantsdata$contr_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
 
-
 b=boot(participantsdata$contr_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
 boot.ci(b) # Output: use BCA!
@@ -400,7 +391,6 @@ boot.ci(b)
 b=boot(pp.explicit.incidental$contr_input_T3, samplemean, R=10000)
 plot(b) 
 boot.ci(b)
-
 
 b=boot(pp.explicit.incidental$contr_noinput_T1, samplemean, R=10000)
 plot(b) # check if the bootstrap looks like a normal distribution
