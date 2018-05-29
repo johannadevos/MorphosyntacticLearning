@@ -10,11 +10,12 @@ options(contrasts=c("contr.sum","contr.poly")) # Set contrasts to sum-to-zero
 # set working directory to source file location
 
 # PREPARE DATASETS:
-participantsdata <- read.csv("180501_Data_participants_IV.csv", header = TRUE) # load data
+participantsdata <- read.csv("../data/180529_Data_participants_IV.csv", header = TRUE) # load data
 colnames(participantsdata)[1] <- "participant" #rename participant variable
-participantsdata <- participantsdata[-c(49:59),] #exclude empty rows
+str(participantsdata)
 
 # turn self-rated variables into ordered factor:
+#participantsdata$proficiency_overall <- as.factor(participantsdata$proficiency_overall)
 proficiency_overall <- factor(participantsdata$proficiency_overall, ordered=TRUE)
 proficiency_written <- factor(participantsdata$proficiency_written, ordered=TRUE)
 proficiency_average <- factor(participantsdata$proficiency_average, ordered=TRUE)
@@ -29,16 +30,15 @@ pp.incidental <- subset(participantsdata, subset=learningtype=="incidental")
 pp.unaware <- subset(participantsdata, subset=learningtype=="unaware")
 
 # Separately load data about instruction time
-instructiontime <- read.csv("180522_German_instruction.csv", header = TRUE)
+instructiontime <- read.csv("../data/180522_German_instruction.csv", header = TRUE)
 colnames(instructiontime)[1] <- "participant" #rename participant variable
 instruction.explicit <- subset(instructiontime, subset=Learningtype=="explicit")
 instruction.incidental <- subset(instructiontime, subset=Learningtype=="incidental")
 instruction.unaware <- subset(instructiontime, subset=Learningtype=="unaware")
 
-???
+# Trying to drop unused levels, but doesn't currently work
 instruction.exp.inc <- subset(instructiontime, Learningtype !="unaware")
 instruction.exp.inc <- droplevels(instruction.exp.inc, instruction.exp.inc$Learningtype=="unaware")
-???
 
 # Variables to check:
 colnames(participantsdata)
@@ -125,7 +125,7 @@ shapiro.results <- cbind(shapiro.lextale.exp, shapiro.lextale.inc, shapiro.lexta
                          shapiro.PRE_CONTR.exp, shapiro.PRE_CONTR.inc, shapiro.PRE_CONTR.una,
                          shapiro.usage.exp, shapiro.usage.inc, shapiro.usage.una)
 
-write.csv(shapiro.results, file="Shapiro.csv") # write csv output
+write.csv(shapiro.results, file="../results/Shapiro.csv") # write csv output
 
 
 # CHECK SKEW AND KURTOSIS (skew.2SE should be smaller than 1)
@@ -185,7 +185,7 @@ desc.results <- cbind(desc.lextale.exp,desc.lextale.inc,desc.lextale.una,
                       desc.PRE_CRIT.exp,desc.PRE_CRIT.inc, desc.PRE_CONTR.exp,desc.PRE_CONTR.inc,desc.PRE_CONTR.una,
                       desc.usage.exp, desc.usage.inc, desc.usage.una)
 
-write.csv(desc.results, file="Skew_and_kurtosis.csv") # write csv output
+write.csv(desc.results, file="../results/Skew_and_kurtosis.csv") # write csv output
 
 
 # QQ-PLOTS (dots should be on a straight line)
@@ -240,7 +240,7 @@ plotheight = 6.5
 qq-lextale-exp <-recordPlot() # Save plot information into record
 
 # Create png with width, height and resolution
-png("qq-lextale-exp.png", width=plotwidth, height=plotheight,units="in",res=300)
+png("../results/qq-lextale-exp.png", width=plotwidth, height=plotheight,units="in",res=300)
 replayPlot(qq-lextale-exp)
 dev.off()
 
