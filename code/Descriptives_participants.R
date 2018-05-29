@@ -14,9 +14,8 @@ options(contrasts=c("contr.sum","contr.poly")) # Set contrasts to sum-to-zero
 # DATA PREPARATION:
 
 # Load data
-participantsdata <- read.csv("180501_Data_participants_IV.csv", header = TRUE) # load data
+participantsdata <- read.csv("../data/180529_Data_participants_IV.csv", header = TRUE) # load data
 colnames(participantsdata)[1] <- "participant" #rename participant variable
-participantsdata <- participantsdata[-c(49:59),] #exclude empty rows
 attach(participantsdata)
 
 # Create separate dataframes for different learning types:
