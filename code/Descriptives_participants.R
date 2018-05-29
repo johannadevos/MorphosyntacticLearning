@@ -30,20 +30,17 @@ pp.explicit.incidental <- droplevels(pp.explicit.incidental, pp.explicit.inciden
 levels(pp.explicit.incidental$learningtype) # OK!
 
 # Separately load data about instruction time
-instructiontime <- read.csv("180522_German_instruction.csv", header = TRUE)
+instructiontime <- read.csv("../data/180522_German_instruction.csv", header = TRUE)
 colnames(instructiontime)[1] <- "participant" #rename participant variable
 instruction.explicit <- subset(instructiontime, subset=Learningtype=="explicit")
 instruction.incidental <- subset(instructiontime, subset=Learningtype=="incidental")
 instruction.unaware <- subset(instructiontime, subset=Learningtype=="unaware")
+levels(instructiontime$Learningtype)
 
-
-???
+# Trying to drop unused levels, but doesn't currently work
 instruction.exp.inc <- subset(instructiontime, Learningtype !="unaware")
+levels(instruction.exp.inc$Learningtype)
 instruction.exp.inc <- droplevels(instruction.exp.inc, instruction.exp.inc$Learningtype=="unaware")
-???
-
-
-
 
 
 
@@ -113,18 +110,11 @@ scores.inc <- basicStats(pp.incidental[, 34:77]); setDT(scores.inc, keep.rowname
 scores.una <- basicStats(pp.unaware[, 34:77]); setDT(scores.una, keep.rownames = TRUE); colnames(scores.una)[1] <- "descriptives"
 scores.all2 <- basicStats(pp.explicit.incidental[, 34:77]); setDT(scores.all2 , keep.rownames = TRUE); colnames(scores.all2 )[1] <- "descriptives"
 
-
-
 descriptives.all <- c(lextale.all, age.all, proficiency.all, scores.all, baseline.all, L2s_amount.all, School_Evening_years.all, German_at_uni_years.all) #put all the objects into one list
 descriptives.exp <- c(lextale.exp, age.exp, proficiency.exp, scores.exp, baseline.exp, L2s_amount.exp, School_Evening_years.exp, German_at_uni_years.exp) 
 descriptives.inc <- c(lextale.inc, age.inc, proficiency.inc, scores.inc, baseline.inc, L2s_amount.inc, School_Evening_years.inc, German_at_uni_years.inc)
 descriptives.una <- c(lextale.una, age.una, proficiency.una, scores.una, baseline.una, L2s_amount.una, School_Evening_years.una, German_at_uni_years.una)
-descriptives.all2 <- c(lextale.all2, age.all2, proficiency.all2, scores.all2, baseline.all2, L2s_amount.all2, GSchool_Evening_years.all2, erman_at_uni_years.all2)
-
-baseline.output <-c(baseline.all, baseline.exp, baseline.inc, baseline.una, baseline.all2) # baseline only
-L2s_amount.output <-c(L2s_amount.all, L2s_amount.exp, L2s_amount.inc, L2s_amount.una, L2s_amount.all2) # number of L2s only
-instruction.output <-c(School_Evening_years.all, School_Evening_years.exp, School_Evening_years.inc, School_Evening_years.una, School_Evening_years.all2,
-                       German_at_uni_years.all, German_at_uni_years.exp, German_at_uni_years.inc, German_at_uni_years.una, German_at_uni_years.all2)
+descriptives.all2 <- c(lextale.all2, age.all2, proficiency.all2, scores.all2, baseline.all2, L2s_amount.all2, School_Evening_years.all2, German_at_uni_years.all2)
 
 descriptives.output <- c(lextale.all, lextale.exp, lextale.inc, lextale.una, lextale.all2,
                          age.all, age.exp, age.inc, age.una, age.all2,
@@ -132,15 +122,12 @@ descriptives.output <- c(lextale.all, lextale.exp, lextale.inc, lextale.una, lex
                          baseline.all, baseline.exp, baseline.inc, baseline.una, baseline.all2,
                          scores.all, scores.exp, scores.inc, scores.una, scores.all2) #put everything into one list (but I prefer individual lists)
 
-write.csv(descriptives.output, file = "Descriptives.csv") #put output into 1 csv table
-write.csv(descriptives.all, file = "Descriptives_overall.csv") #put output into 1 csv table
-write.csv(descriptives.exp, file = "Descriptives_explicit.csv") #put output into 1 csv table
-write.csv(descriptives.inc, file = "Descriptives_incidental.csv") #put output into 1 csv table
-write.csv(descriptives.una, file = "Descriptives_unaware.csv") #put output into 1 csv table
-write.csv(descriptives.all2, file = "Descriptives_overall_exp_inc.csv") #put output into 1 csv table
-write.csv(baseline.output, file = "Descriptives_baseline.csv")
-write.csv(L2s_amount.output, file = "Descriptives_Number_of_L2s.csv")
-write.csv(instruction.output, file = "Instruction_time.csv")
+write.csv(descriptives.output, file = "../results/Descriptives.csv") #put output into 1 csv table
+write.csv(descriptives.all, file = "../results/Descriptives_overall.csv") #put output into 1 csv table
+write.csv(descriptives.exp, file = "../results/Descriptives_explicit.csv") #put output into 1 csv table
+write.csv(descriptives.inc, file = "../results/Descriptives_incidental.csv") #put output into 1 csv table
+write.csv(descriptives.una, file = "../results/Descriptives_unaware.csv") #put output into 1 csv table
+write.csv(descriptives.all2, file = "../results/Descriptives_overall_exp_inc.csv") #put output into 1 csv table
 
 
 # Check Confidence Intervals
