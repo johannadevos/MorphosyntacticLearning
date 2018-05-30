@@ -103,3 +103,16 @@ summary(rePCA(testmoment_item)) # Third dimension over items is not supported by
 
 tic(); final <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(final)
+
+
+# A simpler model to investigate the main effect of condition
+
+# Relevel
+data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
+
+tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+summary(main_condition_effect)
+
+tic(); main_condition_effect_simple_re <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(main_condition_effect_simple_re, main_condition_effect)
+# This ANOVA shows that also for the simpler model, the inclusion of random slopes of verbtype over participant substiantially increases model fit
