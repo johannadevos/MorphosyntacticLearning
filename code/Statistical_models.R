@@ -113,9 +113,15 @@ summary(final)
 # Relevel
 data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
 
-tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(main_condition_effect)
 
-tic(); main_condition_effect_simple_re <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+# Relevel to obtain insight in control items
+data$verbtype <- factor(data$verbtype, levels = c("control", "critical"))
+tic(); main_condition_effect_contr <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+summary(main_condition_effect_contr)
+
+# Do the random slopes of verbtype over participant increase model fit?
+tic(); main_condition_effect_simple_re <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 anova(main_condition_effect_simple_re, main_condition_effect)
 # This ANOVA shows that also for the simpler model, the inclusion of random slopes of verbtype over participant substiantially increases model fit
