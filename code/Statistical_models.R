@@ -2,7 +2,7 @@
 # Copyright Eva Koch (2018)
 
 # Libraries
-library(lme4); library(tictoc)
+library(lme4); library(tictoc); library(arm)
 
 # Clear workspace
 rm(list=ls())
@@ -19,7 +19,7 @@ logit2per = function(X){return(exp(X)/(1+exp(X)))}
 logit2per(1.76317) # this is the probability predicted for those combination of factor levels that is represented by the intercept
 
 
-# Model explorations
+## Model explorations
 
 # Relevel
 data$testmoment <- factor(data$testmoment, levels = c("T2", "T3", "T1"))
@@ -65,7 +65,7 @@ summary.prcomplist <- function(object,...) {
   lapply(object,summary)
 }
 
-# Explore random-effects structure based on Bates et al. (2015)
+## Explore random-effects structure based on Bates et al. (2015)
 
 # Random slope of learningtype over item
 tic(); learningtype_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1 + learningtype|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
@@ -105,7 +105,15 @@ final_inc <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbt
 summary(final_inc)
 
 
-# A simpler model to investigate the main effect of condition at T1
+## Investigate model fit
+
+# Inspect residuals
+binnedplot(fitted(final), resid(final, type = "response"), cex.pts=1, col.int="black", xlab = "Estimated score (as probability)")
+# fitted(final) is identical to logit2per(predict(final))
+# Thus, 'fitted' gives probabilities, while 'predict' gives logit values
+
+
+## A simpler model to investigate the main effect of condition at T1
 
 # Relevel
 data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
