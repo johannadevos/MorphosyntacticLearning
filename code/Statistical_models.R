@@ -25,26 +25,19 @@ logit2per(1.76317) # this is the probability predicted for those combination of 
 data$testmoment <- factor(data$testmoment, levels = c("T2", "T3", "T1"))
 data$verbtype <- factor(data$verbtype, levels = c("critical", "control"))
 
-# Model based on research questions
-tic(); start <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+# Model with all possible fixed-effects (i.e., a four-way interaction)
+tic(); start <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(start)
 
 # Does the start model fit the data significantly better as compared to a model without random intercepts over items?
-tic(); start_min_item_intercepts <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); start_min_item_intercepts <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 anova(start_min_item_intercepts, start)
 
 # Does the start model fit the data significantly better as compared to a model without random intercepts over participants?
-tic(); start_min_part_intercepts <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + (1|item), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); start_min_part_intercepts <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|item), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 anova(start_min_part_intercepts, start)
 
-# Does the addition of extra fixed and/or random effects improve model fit?
-
-# Add interaction verbtype:learningtype
-tic(); verb_learn <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-summary(verb_learn)
-anova(start, verb_learn)
-
-
+# Does the addition of extra random effects improve model fit?
 # Explore different random-effects (RE) structures following Bates et al. (2015)
 # First, find the number of dimensions in the RE structure that are supported by the data
 
@@ -75,53 +68,42 @@ summary.prcomplist <- function(object,...) {
 # Explore random-effects structure based on Bates et al. (2015)
 
 # Random slope of learningtype over item
-tic(); learningtype_item <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1 + learningtype|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(verb_learn, learningtype_item)
-# ANOVA shows that model fit has decreased (higher AIC)
+tic(); learningtype_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1 + learningtype|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(start, learningtype_item) # No significant improvement, and even a higher AIC
 
 # Random slope of verbtype over participant
-tic(); verbtype_part <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-summary(verbtype_part)
-anova(verb_learn, verbtype_part)
-# Model fit increases substantially
-# Is the number of parameters still supported by the model?
+tic(); verbtype_part <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(start, verbtype_part) # Model fit increases substantially and significantly
 summary(rePCA(verbtype_part)) # All dimensions are supported by the data
 
 # Random slope of verbtype over item
-tic(); verbtype_item <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-# "Model is nearly unidentifiable: large eigenvalue ratio" --> we won't use this model
+tic(); verbtype_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(verbtype_part, verbtype_item) # Model fit increases significantly
+summary(rePCA(verbtype_item)) # All dimensions are supported by the data
 
 # Random slope of testmoment over participant
-tic(); testmoment_part <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1|item) + (1+verbtype+testmoment|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(verbtype_part, testmoment_part)
-# ANOVA shows that model fit has decreased (higher AIC)
+tic(); testmoment_part <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbtype|item) + (1+verbtype+testmoment|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(verbtype_item, testmoment_part) # No significant improvement, and even a higher AIC
 
 # Random slope of testmoment over item
-tic(); testmoment_item <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1+testmoment|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(verbtype_part, testmoment_item) # Marginal improvement
+tic(); testmoment_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbtype+testmoment|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+anova(verbtype_item, testmoment_item) # Marginal improvement
 summary(rePCA(testmoment_item)) # Third dimension over items is not supported by the model
 
-
-# Final model
-
-tic(); final <- glmer(bin_score ~ input*testmoment*learningtype + input*testmoment*verbtype + learningtype*verbtype + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+# Final model (= identical to verbtype_item)
+final <- verbtype_item
 summary(final)
 
 
-# A simpler model to investigate the main effect of condition
+# A simpler model to investigate the main effect of condition at T1
 
 # Relevel
 data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
 
-tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(main_condition_effect)
 
 # Relevel to obtain insight in control items
 data$verbtype <- factor(data$verbtype, levels = c("control", "critical"))
-tic(); main_condition_effect_contr <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); main_condition_effect_contr <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(main_condition_effect_contr)
-
-# Do the random slopes of verbtype over participant increase model fit?
-tic(); main_condition_effect_simple_re <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(main_condition_effect_simple_re, main_condition_effect)
-# This ANOVA shows that also for the simpler model, the inclusion of random slopes of verbtype over participant substiantially increases model fit
