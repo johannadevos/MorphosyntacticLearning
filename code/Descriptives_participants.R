@@ -1,3 +1,5 @@
+# Copyright Eva Koch (2018)
+
 ### Script for Study 1 ###
 # Created on 8.5.2018
 # Aim: Participants description; descriptive statistics for participants and items

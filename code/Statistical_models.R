@@ -1,3 +1,6 @@
+# Copyright Johanna de Vos (2018)
+# Copyright Eva Koch (2018)
+
 # Libraries
 library(lme4); library(tictoc)
 

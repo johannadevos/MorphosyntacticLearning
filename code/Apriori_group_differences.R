@@ -1,3 +1,5 @@
+# Copyright Eva Koch (2018)
+
 ########################################
 # RULE OUT A PRIORI GROUP DIFFERENCES:
 ########################################
