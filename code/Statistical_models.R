@@ -94,16 +94,27 @@ summary(rePCA(testmoment_item)) # Third dimension over items is not supported by
 final <- verbtype_item
 summary(final)
 
+# Obtain confidence intervals and odds ratios for the final model
+se <- sqrt(diag(vcov(final)))
+(tab <- cbind(Est = fixef(final), LL = fixef(final) - 1.96*se, UL = fixef(final) + 1.96*se)) # CIs
+exp(tab) # Calculate and print odds ratios
+
 
 # A simpler model to investigate the main effect of condition at T1
 
 # Relevel
 data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
 
-tic(); main_condition_effect <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-summary(main_condition_effect)
+# Model
+tic(); simple <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+summary(simple)
+
+# Obtain confidence intervals and odds ratios for the simple model
+se_main <- sqrt(diag(vcov(simple)))
+(tab_main <- cbind(Est = fixef(simple), LL = fixef(simple) - 1.96*se_main, UL = fixef(simple) + 1.96*se_main)) # CIs
+exp(tab_main) # Calculate and print odds ratios
 
 # Relevel to obtain insight in control items
 data$verbtype <- factor(data$verbtype, levels = c("control", "critical"))
-tic(); main_condition_effect_contr <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-summary(main_condition_effect_contr)
+tic(); simple_contr <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+summary(simple_contr)
