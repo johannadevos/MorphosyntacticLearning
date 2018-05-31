@@ -12,7 +12,7 @@ options(contrasts=c("contr.sum","contr.poly")) # Set contrasts to sum-to-zero
 # set working directory to source file location
 
 # PREPARE DATASETS:
-participantsdata <- read.csv("../data/180529_Data_participants_IV.csv", header = TRUE) # load data
+participantsdata <- read.csv("../data/Data_participants_wide.csv", header = TRUE) # load data
 colnames(participantsdata)[1] <- "participant" #rename participant variable
 str(participantsdata)
 
