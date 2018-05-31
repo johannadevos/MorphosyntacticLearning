@@ -99,6 +99,11 @@ se <- sqrt(diag(vcov(final)))
 (tab <- cbind(Est = fixef(final), LL = fixef(final) - 1.96*se, UL = fixef(final) + 1.96*se)) # CIs
 exp(tab) # Calculate and print odds ratios
 
+# Final model with 'incidental' as intercept
+data$learningtype <- factor(data$learningtype, levels = c("incidental", "explicit"))
+final_inc <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5)))
+summary(final_inc)
+
 
 # A simpler model to investigate the main effect of condition at T1
 
