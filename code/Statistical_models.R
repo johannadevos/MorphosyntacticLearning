@@ -8,11 +8,14 @@ library(lme4); library(tictoc); library(arm)
 rm(list=ls())
 
 # Read in data
-data <- read.csv("../data/Long_data.csv")
+data <- read.csv("../data/Data_long.csv")
 str(data)
 
 # Remove unaware participants
 data <- data[data$learningtype!="unaware",]
+
+# Remove observations if items are not known
+data <- data[data$known!="NT",]
 
 # Define function to calculate probability from logit
 logit2per = function(X){return(exp(X)/(1+exp(X)))}
@@ -37,9 +40,9 @@ anova(start_min_item_intercepts, start)
 tic(); start_min_part_intercepts <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|item), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 anova(start_min_part_intercepts, start)
 
-# Does the addition of extra random effects improve model fit?
-# Explore different random-effects (RE) structures following Bates et al. (2015)
-# First, find the number of dimensions in the RE structure that are supported by the data
+
+## Explore different random-effects (RE) structures following Bates et al. (2015)
+## Does the addition of extra random effects improve model fit?
 
 # Define rePCA function (Bates, 2015, retrieved from https://github.com/dmbates/RePsychLing/blob/master/R/rePCA.R)
 rePCA <- function(x) UseMethod('rePCA')
@@ -64,8 +67,6 @@ rePCA.merMod <- function(x) {
 summary.prcomplist <- function(object,...) {
   lapply(object,summary)
 }
-
-## Explore random-effects structure based on Bates et al. (2015)
 
 # Random slope of learningtype over item
 tic(); learningtype_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1 + learningtype|item) + (1|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
