@@ -19,7 +19,6 @@ data <- data[data$known!="NT",]
 
 # Define function to calculate probability from logit
 logit2per = function(X){return(exp(X)/(1+exp(X)))}
-logit2per(1.76317) # this is the probability predicted for those combination of factor levels that is represented by the intercept
 
 
 ## Model explorations
@@ -120,7 +119,7 @@ binnedplot(fitted(final), resid(final, type = "response"), cex.pts=1, col.int="b
 data$testmoment <- factor(data$testmoment, levels = c("T1", "T2", "T3"))
 
 # Model
-tic(); simple <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + verbtype*testmoment + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
+tic(); simple <- glmer(bin_score ~ verbtype*learningtype + testmoment*learningtype + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
 summary(simple)
 
 # Obtain confidence intervals and odds ratios for the simple model
