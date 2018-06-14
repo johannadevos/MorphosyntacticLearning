@@ -76,17 +76,13 @@ tic(); verbtype_part <- glmer(bin_score ~ input*testmoment*learningtype*verbtype
 anova(start, verbtype_part) # Model fit increases substantially and significantly
 summary(rePCA(verbtype_part)) # All dimensions are supported by the data
 
-# Random slope of verbtype over item
-tic(); verbtype_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+verbtype|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-# Output: Warning message 'Model failed to converge'; remove this random slope again from the model
-
 # Random slope of testmoment over participant
 tic(); testmoment_part <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1|item) + (1+verbtype+testmoment|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(verbtype_item, testmoment_part) # No significant improvement, and even a higher AIC
+anova(verbtype_part, testmoment_part) # No significant improvement, and even a higher AIC
 
 # Random slope of testmoment over item
 tic(); testmoment_item <- glmer(bin_score ~ input*testmoment*learningtype*verbtype + (1+testmoment|item) + (1+verbtype|participant), family = 'binomial', data = data, control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=1e5))); toc()
-anova(verbtype_item, testmoment_item) # Marginal improvement
+anova(verbtype_part, testmoment_item) # Small improvement (AIC difference of 6; p = .007)
 summary(rePCA(testmoment_item)) # Third dimension over items is not supported by the model
 
 # Final model (= identical to verbtype_part)
