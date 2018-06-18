@@ -4,3 +4,5 @@
 *
 # Except this file
 !.gitignore
+!Data_long.csv
+!Data_participants_wide.csv

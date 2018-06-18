@@ -9,5 +9,3 @@ Eva Koch wrote `Apriori_group_differences.R` and `Descriptives_participants.R`.
 Johanna de Vos wrote `Statistical_models.R`.
 
 `Statistical_models.R` contains a series of generalised linear mixed-effects models that are used to investigate the acquisition of grammar in a second language.
-
-The data and results currently are not shared online.
