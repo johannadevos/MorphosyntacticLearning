@@ -3,7 +3,7 @@
 
 # This version was created in June 2018.
 # In this version of the script, only test moments T1 and T2 are included, not T3 (which refers to a different task).
-# Only the 'explicit' and 'incidental' learner groups are kept; the 'unaware' group is to small (n=6) to integrate in the analysis.
+# Only the 'explicit' and 'incidental' learner groups are kept; the 'unaware' group is too small (n=6) to integrate in the analysis.
 # Further, only critical items are included, not control items.
 
 # Libraries
